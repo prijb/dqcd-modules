@@ -312,4 +312,25 @@ class DQCDBDTProducer(JetLepMetSyst):
         return df, [b_name]
 
 def DQCDBDT(*args, **kwargs):
+    """
+    Returns the DQCD BDT output.
+
+    Lepton and jet systematics (used for pt and mass variables) can be modified using the parameters
+    from :ref:`BaseModules_JetLepMetSyst`.
+
+    YAML sintaxis:
+
+    .. code-block:: yaml
+    
+        codename:
+            name: DQCDBDT
+            path: DQCD.Modules.BDTinference
+            parameters:
+                isMC: self.dataset.process.isMC
+                # model_m: 0
+                # model_ctau: 0
+                # model_xi0: 0
+                # model_xiL: 0
+
+    """
     return lambda: DQCDBDTProducer(*args, **kwargs)
