@@ -37,7 +37,7 @@ std::vector<float> BDTinference::get_bdt_outputs(std::vector<float> inputs) {
         ++ivar;
     }
     DMatrixHandle dvalues;
-    XGDMatrixCreateFromMat(reinterpret_cast<float*>(values), 1, inputs.size(), 0., &dvalues);
+    XGDMatrixCreateFromMat(reinterpret_cast<float*>(values), 1, inputs.size(), -9999., &dvalues);
 
     // Dimension of output prediction
     bst_ulong out_dim;

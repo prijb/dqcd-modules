@@ -77,7 +77,7 @@ class DQCDBDTProducer(JetLepMetSyst):
                         });
                     }
                     std::stable_sort(jets.begin(), jets.end(), jet_legacy_sort);
-    
+
                     std::vector<muon_legacy_t> muons(std::max(8, nMuon), muon_legacy_t());
                     for (int i = 0; i < nMuon; i++) {
                         muons[i] = muon_legacy_t({
@@ -264,30 +264,28 @@ class DQCDBDTProducer(JetLepMetSyst):
 
 
     def run(self, df):
-
-        # FIXME
-        # df = df.Filter("""HLT_Mu9_IP6_part0 == 1 || HLT_Mu9_IP6_part1 == 1 ||
-            # HLT_Mu9_IP6_part0 == 2 || HLT_Mu9_IP6_part0 == 3 || HLT_Mu9_IP6_part4 == 1""")
-
-        # df = df.Filter("event == 4")
-
         s = randomize("bdt")
+
+        # Some fixes needed
+        #   - muonSV_mu*pt systematics (probably need to use mu*index and extract the pt from it)
+        #   - SV systematics?
         df = df.Define(s, f"""!(((HLT_Mu9_IP6_part0 == 1) || 
             (HLT_Mu9_IP6_part1 == 1) || (HLT_Mu9_IP6_part2 == 1) || (HLT_Mu9_IP6_part3 == 1) || 
             (HLT_Mu9_IP6_part4 == 1)) && (Muon_pt[Muon_pt > 5 && abs(Muon_eta) < 2.4].size() > 0)
-            && (Jet_pt[Jet_pt > 15 && abs(Jet_eta) < 2.4].size() > 0)) 
+            && (Jet_pt{self.jet_syst}[Jet_pt{self.jet_syst} > 15 && abs(Jet_eta) < 2.4].size() > 0))
             ? std::vector<float>(1, -1.)
             : get_bdt_outputs_{self.model}(
                 nJet, nMuon, nSV, nsv, nmuonSV,
-                MET_pt, MET_phi,
+                MET{self.met_smear_tag}_pt{self.met_syst},
+                MET{self.met_smear_tag}_phi{self.met_syst},
                 {self.model_m}, {self.model_ctau}, {self.model_xi0}, {self.model_xiL},
-                Jet_pt, Jet_eta, Jet_phi, Jet_mass,
+                Jet_pt{self.jet_syst}, Jet_eta, Jet_phi, Jet_mass{self.jet_syst},
                 Jet_chEmEF, Jet_chHEF, Jet_neEmEF,
                 Jet_neHEF, Jet_muEF, Jet_muonSubtrFactor, Jet_chFPV0EF,
                 Jet_nMuons, Jet_nElectrons, Jet_nConstituents,
                 Jet_btagDeepB, Jet_btagDeepC, Jet_qgl, Jet_puIdDisc,
                 Jet_muonIdx1, Jet_muonIdx2,
-                Muon_eta, Muon_phi, Muon_pt, Muon_ptErr,
+                Muon_eta, Muon_phi, Muon_pt{self.muon_syst}, Muon_ptErr,
                 Muon_dxy, Muon_dxyErr, Muon_dz, Muon_dzErr,
                 Muon_ip3d, Muon_sip3d, Muon_charge, Muon_tightId,
                 Muon_softMva, Muon_pfRelIso03_all,
@@ -303,10 +301,10 @@ class DQCDBDTProducer(JetLepMetSyst):
                 SV_pAngle, SV_chi2, SV_ndof
         )""")
 
-        params = [self.bdt_name, self.model_m, self.model_ctau, self.model_xi0, self.model_xiL]
-        params = [str(param).replace(".", "p") for param in params]
+        p = [self.bdt_name, self.model_m, self.model_ctau, self.model_xi0, self.model_xiL]
+        p = [str(param).replace(".", "p") for param in p]
 
-        b_name = (f"{params[0]}_m_{params[1]}_ctau_{params[2]}_xi0_{params[3]}_xiL_{params[4]}")
+        b_name = (f"{p[0]}_m_{p[1]}_ctau_{p[2]}_xi0_{p[3]}_xiL_{p[4]}{self.systs}")
         df = df.Define(b_name, " %s.at(0)" % s)
 
         return df, [b_name]
@@ -321,7 +319,7 @@ def DQCDBDT(*args, **kwargs):
     YAML sintaxis:
 
     .. code-block:: yaml
-    
+
         codename:
             name: DQCDBDT
             path: DQCD.Modules.BDTinference
