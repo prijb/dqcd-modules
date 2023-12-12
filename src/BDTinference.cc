@@ -7,7 +7,7 @@ BDTinference::BDTinference (std::string filename) {
     //bst_ulong out_len;
     //const char **out_dump_array;
     //XGBoosterDumpModel(booster_, "", 0, &out_len, &out_dump_array);
-    //std::cout << "Dumping" << std::endl;
+    ////std::cout << "Dumping" << std::endl;
     //FILE *file = fopen("filename", "w");
     //for (int i=0; i < (int) out_len; i++)
         //fputs(out_dump_array[i], file);
@@ -24,7 +24,7 @@ std::vector<float> BDTinference::get_bdt_outputs(std::vector<float> inputs) {
 
     float values[1][inputs.size()];
     int ivar=0;
-
+    //std::cout << inputs.size() << std::endl;
     //char const config[] =
         //"{\"training\": false, \"type\": 0, "
         //"\"iteration_begin\": 0, \"iteration_end\": 0, \"strict_shape\": false}";
@@ -32,7 +32,7 @@ std::vector<float> BDTinference::get_bdt_outputs(std::vector<float> inputs) {
     //std::cout << "Size: " << inputs.size() << std::endl;
     for(auto& var : inputs)
     {
-        //std::cout << var << std::endl;
+        // std::cout << var << std::endl;
         values[0][ivar] = var;
         ++ivar;
     }

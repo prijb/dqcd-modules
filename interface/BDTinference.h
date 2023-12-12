@@ -40,7 +40,35 @@ struct jet_legacy_t {
         //puIdDisc(-999), muonIdx1(-999), muonIdx2(-999) {}
 };
 
+struct jet_ul_t {
+    float pt = -999.;
+    float eta = -999.;
+    float phi = -999.;
+    float mass = -999.;
+    float chEmEF = -999.;
+    float chHEF = -999.;
+    float neEmEF = -999.;
+    float neHEF = -999.;
+    float muEF = -999.;
+    float muonSubtrFactor = -999.;
+    float chFPV0EF = -999.;
+    float nMuons = -999.;
+    float nElectrons = -999.;
+    float nConstituents = -999.;
+    float btagDeepB = -999.;
+    // float btagDeepC = -999.;
+    float qgl = -999.;
+    float puIdDisc = -999.;
+    float muonIdx1 = -999.;
+    float muonIdx2 = -999.;
+};
+
 bool jet_legacy_sort (const jet_legacy_t& jA, const jet_legacy_t& jB)
+{
+  return (jA.pt > jB.pt);
+}
+
+bool jet_ul_sort (const jet_ul_t& jA, const jet_ul_t& jB)
 {
   return (jA.pt > jB.pt);
 }
@@ -101,6 +129,11 @@ bool muonsv_legacy_sort (const muonsv_legacy_t& svA, const muonsv_legacy_t& svB)
   return (svA.dlen > svB.dlen);
 }
 
+bool muonsv_ul_sort (const muonsv_legacy_t& svA, const muonsv_legacy_t& svB)
+{
+  return (svA.chi2 < svB.chi2) && (svA.chi2 != -999.);
+}
+
 struct sv_legacy_t {
     float pt = -999.;
     float eta = -999.;
@@ -127,6 +160,11 @@ struct sv_legacy_t {
 bool sv_legacy_sort (const sv_legacy_t& svA, const sv_legacy_t& svB)
 {
   return (svA.dlen > svB.dlen);
+}
+
+bool sv_ul_sort (const sv_legacy_t& svA, const sv_legacy_t& svB)
+{
+  return (svA.chi2 < svB.chi2) && (svA.chi2 != -999.);
 }
 
 
