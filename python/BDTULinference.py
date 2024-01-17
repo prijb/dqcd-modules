@@ -8,13 +8,19 @@ ROOT = import_root()
 
 class DQCDULBDTProducer(JetLepMetSyst):
     def __init__(self, *args, **kwargs):
-        # self.model_path = kwargs.pop("model_path", "/vols/cms/mmieskol/icenet/checkpoint/dqcd/"
-            # "config__tune0.yml/modeltag__vector_all/XGB_199.json")
-        self.model_path = kwargs.pop("model_path", "/vols/cms/khl216/model_ul_saved.model")
-        # self.model_path = kwargs.pop("model_path", "/vols/cms/jleonhol/icenet/checkpoint/dqcd/"
-            # "config__tune0.yml/modeltag__vector_all/XGB_199.dat")
+        scenario = kwargs.pop("scenario", "A")
+        if scenario == "A":
+            default_model_path = os.path.expandvars(
+                "$CMSSW_BASE/src/DQCD/Modules/data/model_ul_saved.model")
+        elif scenario == "B1":
+            default_model_path = os.path.expandvars(
+                "$CMSSW_BASE/src/DQCD/Modules/data/model_ul_saved_scenarioB1.model")
+        else:
+            raise ValueError("Only BDTs for scenarios A and B1 are already implemented")
+
+        self.model_path = kwargs.pop("model_path", default_model_path)
         self.model = self.model_path.replace("/", "_").replace(".", "_")
-        self.bdt_name = kwargs.pop("bdt_name", "bdt")
+        self.bdt_name = kwargs.pop("bdt_name", "bdt_scenario%s" % scenario)
         # self.model_m = kwargs.pop("model_m", 2.0)
         # self.model_ctau = kwargs.pop("model_ctau", 10.0)
         # self.model_xi0 = kwargs.pop("model_xi0", 1.0)
@@ -322,6 +328,7 @@ def DQCDULBDT(*args, **kwargs):
             path: DQCD.Modules.BDTULinference
             parameters:
                 isMC: self.dataset.process.isMC
+                scenario: "A"
                 # model_m: 0
                 # model_ctau: 0
                 # model_xi0: 0
