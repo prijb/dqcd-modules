@@ -11,12 +11,19 @@ class DQCDULBDTProducer(JetLepMetSyst):
         scenario = kwargs.pop("scenario", "A")
         if scenario == "A":
             default_model_path = os.path.expandvars(
-                "$CMSSW_BASE/src/DQCD/Modules/data/model_ul_saved.model")
+                # "$CMSSW_BASE/src/DQCD/Modules/data/model_ul_saved.model")
+                "$CMSSW_BASE/src/DQCD/Modules/data/model_ul_saved_scenarioA_new.model")
         elif scenario == "B1":
             default_model_path = os.path.expandvars(
                 "$CMSSW_BASE/src/DQCD/Modules/data/model_ul_saved_scenarioB1.model")
+        elif scenario == "B2":
+            default_model_path = os.path.expandvars(
+                "$CMSSW_BASE/src/DQCD/Modules/data/model_ul_saved_scenarioB2_new.model")
+        elif scenario == "C":
+            default_model_path = os.path.expandvars(
+                "$CMSSW_BASE/src/DQCD/Modules/data/model_ul_saved_scenarioC_new.model")
         else:
-            raise ValueError("Only BDTs for scenarios A and B1 are already implemented")
+            raise ValueError("Only BDTs for scenarios A, B1, B2, and C are already implemented")
 
         self.model_path = kwargs.pop("model_path", default_model_path)
         self.model = self.model_path.replace("/", "_").replace(".", "_")
