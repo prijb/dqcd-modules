@@ -25,9 +25,6 @@ std::vector<float> BDTinference::get_bdt_outputs(std::vector<float> inputs) {
     float values[1][inputs.size()];
     int ivar=0;
     //std::cout << inputs.size() << std::endl;
-    //char const config[] =
-        //"{\"training\": false, \"type\": 0, "
-        //"\"iteration_begin\": 0, \"iteration_end\": 0, \"strict_shape\": false}";
     
     //std::cout << "Size: " << inputs.size() << std::endl;
     for(auto& var : inputs)
@@ -44,8 +41,21 @@ std::vector<float> BDTinference::get_bdt_outputs(std::vector<float> inputs) {
 
     float const* out_result = NULL;
 
-    auto ret = XGBoosterPredict(
-        booster_, dvalues, 0, 0, 0, &out_dim, &out_result);
+    //auto ret = XGBoosterPredict(
+    //    booster_, dvalues, 0, 0, 0, &out_dim, &out_result);
+    
+    //This config is to get the prediction using XGBoosterPredictFromDMatrix() instead of XGBoosterPredict() 
+    const char* config = R"({
+        "type": 0,
+        "training": false,
+        "iteration_begin": 0,
+        "iteration_end": 0,
+        "strict_shape": false
+    })";
+    
+    auto ret = XGBoosterPredictFromDMatrix(
+        booster_, dvalues, config, &out_dim, &out_result);
+    
 
     XGDMatrixFree(dvalues);
 
