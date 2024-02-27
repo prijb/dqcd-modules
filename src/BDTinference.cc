@@ -38,6 +38,7 @@ std::vector<float> BDTinference::get_bdt_outputs(std::vector<float> inputs) {
 
     // Dimension of output prediction
     bst_ulong out_dim;
+    const bst_ulong *out_shape;
 
     float const* out_result = NULL;
 
@@ -53,8 +54,11 @@ std::vector<float> BDTinference::get_bdt_outputs(std::vector<float> inputs) {
         "strict_shape": false
     })";
     
+    //Note: Some versions instead have the following definition
+    //auto ret = XGBoosterPredictFromDMatrix(
+    //    booster_, dvalues, config, &out_dim, &out_result);
     auto ret = XGBoosterPredictFromDMatrix(
-        booster_, dvalues, config, &out_dim, &out_result);
+        booster_, dvalues, config, &out_shape, &out_dim, &out_result);
     
 
     XGDMatrixFree(dvalues);
