@@ -11,6 +11,10 @@
 
 #include "DataFormats/Math/interface/deltaR.h"
 
+float sigmoid(float x){
+  return (1./(1 + std::exp(-1.*x)));
+}
+
 struct jet_legacy_t {
     float pt = -999.;
     float eta = -999.;
@@ -63,12 +67,24 @@ struct jet_ul_t {
     float muonIdx2 = -999.;
 };
 
+struct jet_scouting_t {
+    float pt = -999.;
+    float eta = -999.;
+    float phi = -999.;
+    float mass = -999.;
+};
+
 bool jet_legacy_sort (const jet_legacy_t& jA, const jet_legacy_t& jB)
 {
   return (jA.pt > jB.pt);
 }
 
 bool jet_ul_sort (const jet_ul_t& jA, const jet_ul_t& jB)
+{
+  return (jA.pt > jB.pt);
+}
+
+bool jet_scouting_sort (const jet_scouting_t& jA, const jet_scouting_t& jB)
 {
   return (jA.pt > jB.pt);
 }
@@ -96,7 +112,36 @@ struct muon_legacy_t {
         //pfRelIso03_all(-999), miniPFRelIso_all(-999), jetIdx(-999) {}
 };
 
+struct muon_scouting_t {
+    float eta = -999.;
+    float phi = -999.;
+    float pt = -999.;
+    float normalizedChi2 = -999.;
+    float ecalIso = -999.;
+    float hcalIso = -999.;
+    float trackIso = -999.;
+    float dxy = -999.;
+    float dxyErr = -999.;
+    float dz = -999.;
+    float dzErr = -999.;
+    float charge = -999.;
+    float isTracker = -999.;
+    float isGlobal = -999.;
+    float isPFmatched = -999.;
+    float isStandalone = -999.;
+    float nStations = -999.;
+    float nValidPixelHits = -999.;
+    float nValidStripHits = -999.;
+    float nTrackerLayersWithMeasurement = -999.;
+    float nPixelLayersWithMeasurement = -999.;
+};
+
 bool muon_legacy_sort (const muon_legacy_t& mA, const muon_legacy_t& mB)
+{
+  return (mA.pt > mB.pt);
+}
+
+bool muon_scouting_sort (const muon_scouting_t& mA, const muon_scouting_t& mB)
 {
   return (mA.pt > mB.pt);
 }
@@ -124,12 +169,39 @@ struct muonsv_legacy_t {
         //x(-999), y(-999), z(-999), deltaR(-999) {}
 };
 
+struct muonsv_scouting_t {
+    float chi2 = -999.;
+    float pAngle = -999.;
+    float dlen = -999.;
+    float dlenSig = -999.;
+    float dxy = -999.;
+    float dxySig = -999.;
+    float mu1pt = -999.;
+    float mu1eta = -999.;
+    float mu1phi = -999.;
+    float mu2pt = -999.;
+    float mu2eta = -999.;
+    float mu2phi = -999.;
+    float x = -999.;
+    float y = -999.;
+    float z = -999.;
+    float deltaR = -999.;
+    float deltaEta = -999.;
+    float deltaPhi = -999.;
+    float pt = -999.;
+};
+
 bool muonsv_legacy_sort (const muonsv_legacy_t& svA, const muonsv_legacy_t& svB)
 {
   return (svA.dlen > svB.dlen);
 }
 
 bool muonsv_ul_sort (const muonsv_legacy_t& svA, const muonsv_legacy_t& svB)
+{
+  return (svA.chi2 < svB.chi2) && (svA.chi2 != -999.);
+}
+
+bool muonsv_scouting_sort (const muonsv_scouting_t& svA, const muonsv_scouting_t& svB)
 {
   return (svA.chi2 < svB.chi2) && (svA.chi2 != -999.);
 }
@@ -155,6 +227,21 @@ struct sv_legacy_t {
         //pAngle(-999), chi2(-999), ndof(-999) {}
 };
 
+struct sv_scouting_t {
+    float mass = -999.;
+    float x = -999.;
+    float y = -999.;
+    float z = -999.;
+    float dxy = -999.;
+    float dxySig = -999.;
+    float dlen = -999.;
+    float dlenSig = -999.;
+    float pAngle = -999;
+    float chi2 = -999.;
+    float ndof = -999.;
+    float ntracks = -999.;
+};
+
 
 
 bool sv_legacy_sort (const sv_legacy_t& svA, const sv_legacy_t& svB)
@@ -165,6 +252,11 @@ bool sv_legacy_sort (const sv_legacy_t& svA, const sv_legacy_t& svB)
 bool sv_ul_sort (const sv_legacy_t& svA, const sv_legacy_t& svB)
 {
   return (svA.chi2 < svB.chi2) && (svA.chi2 != -999.);
+}
+
+bool sv_scouting_sort (const sv_scouting_t& svA, const sv_scouting_t& svB)
+{
+  return (svA.dlen > svB.dlen);
 }
 
 

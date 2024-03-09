@@ -54,7 +54,7 @@ std::vector<float> BDTinference::get_bdt_outputs(std::vector<float> inputs) {
     {
         for(unsigned int ic=0; ic < out_dim; ++ic) {
             //std::cout << "Score: " << out_result[ic] << std::endl;
-            results.push_back(out_result[ic]);
+            results.push_back(sigmoid(out_result[ic]));
         }
     }
     //for (auto &elem: results)
